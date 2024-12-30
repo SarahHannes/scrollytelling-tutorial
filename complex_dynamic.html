@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollytelling - Complex</title>
+
+    <!-- Importing Scrollama -->
+    <!-- previously, intersection-observer api used to be package within scrollama, but it is not anymore, so we need to import both -->
+    <script src="https://unpkg.com/intersection-observer"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: sans-serif;
+            color: #555;
+            background-color: #fff;
+            font-size: 1.4em;
+        }
+
+        /* some animation */
+        h3 {
+            animation: move 2s;
+            font-style: italic;
+        }
+        
+        @keyframes move {
+            from {
+                margin-left: 50%;
+                width: 50%; 
+            }
+
+            to {
+                margin-left: 0%;
+                width: 350%;
+            }
+            }
+        /* end of animation styling */
+
+        section {
+            max-width: 1000px;
+            margin: 20% auto;
+        }
+
+        section:not(:first-of-type) {
+            max-width: 1000px;
+            margin: 50% auto;
+        }
+
+        /* selecting any div within section tag */
+        
+        section div {
+            display: inline-block; /* to display div siblings side by side */
+            padding: 50px;
+            margin-bottom: 100%;
+        }
+
+        section div.steps {
+            max-width: 500px; /* setting the maxwidth to be just half of overall section tag width (1000px), so we can text & visual side by side */
+        }
+
+        section div.visual {
+            float: right;
+            position: -webkit-sticky; /* have the parent section scroll past before the selected element is let go */
+            position: sticky;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Simple</a>
+        <a href="complex.html">Complex</a>
+        <a href="complex_dynamic.html">Dynamic</a>
+        <a href="complex_multi_attribute.html">Anything you wish!</a>
+        <a href="complex_progressive.html">Progressive</a>
+        </ul>
+    </nav>
+    
+    <section>
+        <h2>A More Complex Scrollytelling Experience</h2>
+        <h3>+ dynamic!</h3>
+    </section>
+    
+    <section>
+        <!-- contains our visual element -->
+        <div class="visual">
+            <svg width=200 height=200> <!-- svg = scallable vector graphics -->
+                <rect id="rectObj" width=200 height=200 x=0 y=0 fill="#ddd"></rect>
+            </svg>
+        </div>
+
+        <!-- contains our text elements -->
+        <div class="steps">
+            <div class="step" data-color="#ddd">My favorite color is gray.</div> <!-- set data attribute that we want to dynamically change in the js script -->
+            <div class="step" data-color="blue">But blue is kinda nice.</div>
+            <div class="step" data-color="#ff9900">And who can argue with a nice shade of orange?</div>
+        </div>
+    </section>
+
+    <section>
+        <div class="steps">
+            <div>The End.</div>
+        </div>
+    </section>
+
+    <script type="text/javascript">
+        const scroller = scrollama();
+
+        scroller
+            .setup({
+                step: '.step'
+            })
+            .onStepEnter((response) => {
+                console.log(response);
+                document.getElementById("rectObj").setAttribute("fill", response.element.dataset.color); // access the data-color we set in the html element
+            });
+
+        window.addEventListener("resize", scroller.resize);
+    </script>
+    
+</body>
+</html>

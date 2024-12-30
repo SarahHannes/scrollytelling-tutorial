@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollytelling - Simple</title>
+
+    <!-- Importing Scrollama -->
+    <!-- previously, intersection-observer api used to be package within scrollama, but it is not anymore, so we need to import both -->
+    <script src="https://unpkg.com/intersection-observer"></script>
+    <script src="https://unpkg.com/scrollama"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <style type="text/css">
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: sans-serif;
+            color: #555;
+            background-color: #fff;
+            font-size: 1.4em;
+        }
+
+        section {
+            height: 100%;
+        }
+
+        div {
+            height: 100%;
+            max-width: 1000px;
+            margin: 50px auto; /* auto margin for left,right = auto center it */
+            text-align: center;
+            padding: 50px;
+        }
+
+        /* styling the rest of elements */
+        div.step {
+            background: #fff; /* an easy way to make the div disappear is making the background white */
+            color: #fff;
+        }
+
+        /* styling element we entered*/
+        div.step.active {
+            background: #ff9900;
+            transition: 1s linear all;
+        }
+
+        /* styling element we exited */
+        div.step.inactive {
+            background: #fff;
+            transition: 1s linear all;
+        }
+
+        div.step.blue {
+            background: blue;
+            transition: 1s linear all;
+        }
+
+        div.step.active.blinky {
+            animation: blinker 1s step-start infinite;
+        }
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Simple</a>
+        <a href="complex.html">Complex</a>
+        <a href="complex_dynamic.html">Dynamic</a>
+        <a href="complex_multi_attribute.html">Anything you wish!</a>
+        <a href="complex_progressive.html">Progressive</a>
+        </ul>
+    </nav>
+
+    <section>
+        <div><h1>A Simple Scrollytelling Experience</h1></div>
+        <div class="step"><p>As objects scroll into view...</p></div>
+        <div class="step blue"><p>they can change appearance...</p></div>
+        <div class="step blinky"><p>and draw attention to themselves...</p></div>
+        <div class="step"><p>and if you didn't notice...</p></div>
+        <div class="step"><p>the old ones can disappear...</p></div>
+    </section>
+
+    <!-- it is always safe best practice to put js script below all html content we have -->
+    <!-- it might throw error if we have js script that reference to html tag that does not exist yet -->
+    <script type="text/javascript">
+        const scroller = scrollama(); // function inside scrollama library
+        
+
+        scroller
+            .setup({
+                step: '.step', // we want to divide the entire html by class=step in our html
+                debug: false,
+                offset: 0.25, // change the threshold (from the top) where we want a step to enter/exit
+                once: false, // only fire an event once (eg if we scroll back up, the previous event wont fire again)
+                threshold: 4, // number of pixels above/below offset value to fire an event (default is 4)
+            })
+            .onStepEnter((response) => { // each time a step is entered, scrollama returns an object (here we call it 'response'), then we can do something with the response
+                console.log(response); // {element: div.step, index: 0, direction: 'down'}  // where the index is the count of .step we've step through
+                response.element.classList.remove('inactive');
+                response.element.classList.add('active'); // add another class to the entered html element
+            })
+            .onStepExit((response) => { // each time a step disappears, do something
+                console.log(response);
+                response.element.classList.remove('active');
+                response.element.classList.add('inactive');
+            });
+
+        window.addEventListener('resize', scroller.resize); // everytime the window resize, tell scrollama to resize itself
+    </script>
+    
+</body>
+</html>
